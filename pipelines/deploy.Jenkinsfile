@@ -28,16 +28,17 @@ pipeline {
             steps {
                 // Use SSH credentials from Jenkins
                 withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-key', keyVariable: 'SSH_KEY')]) {
-                    sh '''
-                    # Ensure the SSH agent is running
-                    eval "$(ssh-agent -s)"
-                    ssh-add <(echo "$SSH_KEY")
+                    script {
+                        // Ensure the SSH agent is running
+                        sh 'eval "$(ssh-agent -s)"'
+                        sh 'ssh-add <(echo "$SSH_KEY")'
 
-                    # Now push using SSH
-                    git push git@github.com:LoayKewan/NetflixInfra2.git main
-                    '''
-
-               }
+                        // Now push using SSH
+                        sh '''
+                        git push git@github.com:LoayKewan/NetflixInfra2.git main
+                        '''
+                    }
+                }
             }
         }
     }
