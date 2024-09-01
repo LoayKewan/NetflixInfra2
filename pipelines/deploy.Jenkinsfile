@@ -26,19 +26,11 @@ pipeline {
         }
         stage('Git push') {
             steps {
-                // Use SSH credentials from Jenkins
-                withCredentials([sshUserPrivateKey(credentialsId: 'github-ssh-key', keyVariable: 'SSH_KEY')]) {
-                    script {
-                        // Ensure the SSH agent is running
-                        sh 'eval "$(ssh-agent -s)"'
-                        sh 'ssh-add <(echo "$SSH_KEY")'
-
-                        // Now push using SSH
-                        sh '''
-                        git push git@github.com:LoayKewan/NetflixInfra2.git main
-                        '''
-                    }
-                }
+               withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
+                 sh '''
+                 git push https://$GITHUB_TOKEN@github.com/alonitac/NetflixInfra.git main
+                 '''
+               }
             }
         }
     }
